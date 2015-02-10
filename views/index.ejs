@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <title><%= title %></title>
+    <style>
+        h1 {
+            display: block;
+            width: 50%;
+            margin: auto;
+            text-align: center;
+            color: #696969;
+            padding-top: 10px;
+        }
+
+    </style>
+
+</head>
+<body>
+<h1><%= title %></h1>
+
+<ng-view></ng-view>
+
+<!-- Libraries -->
+
+
+<script src="/angular/angular.min.js"></script>
+<script src="/angular-route/angular-route.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-resource.min.js"></script>
+
+
+<script>
+    angular.module('app', ['ngRoute', 'ngResource'])
+
+        //---------------
+        // Services
+        //---------------
+
+            .factory('Books', ['$resource', function($resource){
+                return $resource('/books/:id', null, {
+                    'update': { method:'PUT' }
+                });
+            }])
+
+        //---------------
+        // Controllers
+        //---------------
+
+            .controller('BookController', ['$scope', 'Books', function ($scope, Books) {
+                $scope.editing = [];
+                $scope.books = Books.query();
+
+                $scope.save = function(){
+                    if(!$scope.newBook || $scope.newBook.length < 1) return;
+                    var book = new Books({ title: $scope.newBook});
+
+                    // Save
+                    book.$save(function(){
+                        $scope.books.push(book);
+                        $scope.newBook = ''; // clear textbox
+                    });
+                }
+
+                // Update
+                $scope.update = function(index){
+                    var book = $scope.books[index];
+                    Books.update({id: book._id}, book);
+                    $scope.editing[index] = false;
+                }
+
+                // Edit
+                $scope.edit = function(index){
+                    $scope.editing[index] = angular.copy($scope.books[index]);
+                }
+
+                // Cancel
+                $scope.cancel = function(index){
+                    $scope.books[index] = angular.copy($scope.editing[index]);
+                    $scope.editing[index] = false;
+                }
+
+                $scope.remove = function(index){
+                    var book = $scope.books[index];
+                    Books.remove({id: book._id}, function(){
+                        $scope.books.splice(index, 1);
+                    });
+                }
+            }])
+
+            .controller('BookDetailCtrl', ['$scope', '$routeParams', 'Books', '$location', function ($scope, $routeParams, Books, $location) {
+                $scope.book = Books.get({id: $routeParams.id });
+
+                $scope.update = function(){
+                    Books.update({id: $scope.book._id}, $scope.book, function(){
+                        $location.url('/');
+                    });
+                }
+
+                $scope.remove = function(){
+                    Books.remove({id: $scope.book._id}, function(){
+                        $location.url('/');
+                    });
+                }
+            }])
+
+        //---------------
+        // Routes
+        //---------------
+
+            .config(['$routeProvider', function ($routeProvider) {
+                $routeProvider
+                        .when('/', {
+                            templateUrl: '/partials/books.html',
+                            controller: 'BookController'
+                        })
+
+                        .when('/:id', {
+                            templateUrl: '/partials/bookDetails.html',
+                            controller: 'BookDetailCtrl'
+                        });
+            }]);
+</script>
+</body>
+</html>

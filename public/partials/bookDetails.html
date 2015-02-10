@@ -1,0 +1,90 @@
+<style>
+
+    section.book-details {
+        display: block;
+        width: 50%;
+        background: #d3d3d3;
+        margin: 1em auto;
+        height: 100%;
+    }
+
+    input, textarea, li, button, select {
+        display: inline-block;
+        font: 200 1em 'Helvetica Neue', 'Segoe UI', 'Droid Sans', 'Helvetica';
+        outline: none;
+        border: 1px solid #eee;
+        padding: 0.35em 0.5em;
+        margin-right: 2em;
+        color: #696969;
+    }
+
+    h1 {
+
+        width: 50%;
+        margin: auto;
+        text-align: center;
+        color: #696969;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    label {
+
+        font: 200 1em 'Helvetica Neue', 'Segoe UI', 'Droid Sans', 'Helvetica';
+        color: #696969;
+        padding-left: 10px;
+        padding-right: 10px;
+
+    }
+
+    input{
+        /* styles for the input boxes */
+        display: inline-block;
+        outline:0;
+        border: 1px solid #d3d3d3;
+        border-radius: 5px;
+        box-shadow: 0 0 5px 3px #d3d3d3;
+        outline: none;
+        height:23px;
+    }
+
+    button {
+        display: inline-block;
+        padding: 0.35em 0.5em;
+        margin: 1em;
+        color: #696969;
+        text-align: right;
+    }
+
+    .cancel {
+        font: 200 1em 'Helvetica Neue', 'Segoe UI', 'Droid Sans', 'Helvetica';
+        display: inline-block;
+        padding: 0.35em 0.5em;
+        margin: 1em;
+        background: whitesmoke;
+        color: #696969;
+    }
+
+</style>
+
+
+
+<section class="book-details">
+    <h1>{{ book.title }}</h1>
+    <label>Author:</label>
+       <input type="text" ng-model="book.author"><br><br>
+    <label>Rating:</label>
+    <select ng-model="book.rating">
+        <option ng-model="book.rating" value="1">1</option>
+        <option ng-model="book.rating" value="2">2</option>
+        <option ng-model="book.raging" value="3">3</option>
+        <option ng-model="book.rating" value="4">4</option>
+        <option ng-model="book.rating" value="5">5</option>
+    </select><br><br>
+    <label>Link:</label>
+       <input type="text" ng-model="book.link"><br><br>
+
+    <button ng-click="update()">update</button>
+    <button ng-click="remove()">remove</button>
+    <a class="cancel" href="/">Cancel</a>
+</section>
